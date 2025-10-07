@@ -65,7 +65,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: dev-${{ needs.build.outputs.version }}-${{ github.run_number }}
-          TITLE: ${{ needs.build.outputs.commit_message }}
+          TITLE: ${{ env.TAG }}: ${{ needs.build.outputs.commit_message }}
           NOTE: Development build for internal testing
         run: gh release create "$TAG" build.zip --title "$TITLE" --notes "$NOTE"
 
@@ -84,12 +84,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: staging-${{ needs.build.outputs.version }}-${{ github.run_number }}
-          TITLE: ${{ needs.build.outputs.commit_message }}
+          TITLE: ${{ env.TAG }}: ${{ needs.build.outputs.commit_message }}
           NOTE: Pre-production release for QA validation
         run: gh release create "$TAG" build.zip --title "$TITLE" --notes "$NOTE"
 
   deploy-production:
-    needs: [build, deploy-staging] 
+    needs: [build, deploy-staging]   # ✅ 同時依賴 build 與 staging
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -103,7 +103,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: prod-${{ needs.build.outputs.version }}-${{ github.run_number }}
-          TITLE: ${{ needs.build.outputs.commit_message }}
+          TITLE: ${{ env.TAG }}: ${{ needs.build.outputs.commit_message }}
           NOTE: Production release - stable version
         run: gh release create "$TAG" build.zip --title "$TITLE" --notes "$NOTE"
-
