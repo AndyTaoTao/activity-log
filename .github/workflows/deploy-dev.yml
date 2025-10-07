@@ -2,7 +2,7 @@ name: CI Dev Deployment
 
 on:
   push:
-    branches: [ master ]  
+    branches: [ master ]   # 你的 repo 預設分支是 master
 
 jobs:
   build:
@@ -33,6 +33,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4   # 🔑 修正點：確保 gh CLI 找得到 .git
+
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
