@@ -13,6 +13,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.package-version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,6 +23,10 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
+
+      - name: Get package.json version
+        id: package-version
+        run: echo "version=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
 
       - name: Install & Build
         run: |
@@ -41,16 +47,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
           name: build-artifact
-
       - name: Release Dev Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: dev-${{ github.run_number }}
+          TAG: dev-${{ needs.build.outputs.version }}
           NOTE: Development build for internal testing
         run: gh release create "$TAG" build.zip --notes "$NOTE"
 
@@ -61,16 +65,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
           name: build-artifact
-
       - name: Release Staging Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: staging-${{ github.run_number }}
+          TAG: staging-${{ needs.build.outputs.version }}
           NOTE: Pre-production release for QA validation
         run: gh release create "$TAG" build.zip --notes "$NOTE"
 
@@ -81,15 +83,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
           name: build-artifact
-
       - name: Release Production Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: prod-${{ github.run_number }}
+          TAG: prod-${{ needs.build.outputs.version }}
           NOTE: Production release - stable version
         run: gh release create "$TAG" build.zip --notes "$NOTE"
