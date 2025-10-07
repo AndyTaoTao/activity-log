@@ -2,7 +2,7 @@ name: CI Dev Deployment
 
 on:
   push:
-    branches: [ master ]   
+    branches: [ master ]  
 
 jobs:
   build:
@@ -11,15 +11,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: 18
+          bun-version: latest
 
       - name: Install & Build
         run: |
-          npm install
-          npm run build
+          bun install
+          bun run build
           zip -r build.zip .
 
       - name: Upload Artifact
