@@ -130,7 +130,7 @@ jobs:
           TITLE="${TAG}: ${{ needs.build.outputs.commit_message }}"
           NOTES="Production release - stable version"
 
-          if ! gh release create "$TAG" build123.zip --title "$TITLE" --notes "$NOTES"; then
+          if ! gh release create "$TAG" build.zip --title "$TITLE" --notes "$NOTES"; then
             echo "❌ Release 失敗，開始回滾..."
             gh release delete "$TAG" -y || true
             exit 1
