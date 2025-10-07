@@ -26,7 +26,12 @@ jobs:
 
       - name: Get package.json version
         id: package-version
-        run: echo "version=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+        run: |
+          VERSION=$(jq -r .version package.json || echo "")
+          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+            VERSION="0.0.0"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Install & Build
         run: |
