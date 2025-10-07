@@ -82,7 +82,7 @@ jobs:
         run: gh release create "$TAG" build.zip --notes "$NOTE"
 
   deploy-production:
-    needs: deploy-staging
+    needs: [build, deploy-staging]
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -100,3 +100,4 @@ jobs:
           TAG: prod-${{ needs.build.outputs.version }}-${{ github.run_number }}
           NOTE: Production release - stable version
         run: gh release create "$TAG" build.zip --notes "$NOTE"
+
