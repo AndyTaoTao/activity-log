@@ -64,10 +64,10 @@ jobs:
       - name: Release Dev Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: dev-${{ needs.build.outputs.version }}-${{ github.run_number }}
-          TITLE: ${{ env.TAG }}: ${{ needs.build.outputs.commit_message }}
-          NOTE: Development build for internal testing
-        run: gh release create "$TAG" build.zip --title "$TITLE" --notes "$NOTE"
+        run: |
+          TAG="dev-${{ needs.build.outputs.version }}-${{ github.run_number }}"
+          TITLE="${TAG}: ${{ needs.build.outputs.commit_message }}"
+          gh release create "$TAG" build.zip --title "$TITLE" --notes "Development build for internal testing"
 
   deploy-staging:
     needs: build
@@ -83,13 +83,13 @@ jobs:
       - name: Release Staging Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: staging-${{ needs.build.outputs.version }}-${{ github.run_number }}
-          TITLE: ${{ env.TAG }}: ${{ needs.build.outputs.commit_message }}
-          NOTE: Pre-production release for QA validation
-        run: gh release create "$TAG" build.zip --title "$TITLE" --notes "$NOTE"
+        run: |
+          TAG="staging-${{ needs.build.outputs.version }}-${{ github.run_number }}"
+          TITLE="${TAG}: ${{ needs.build.outputs.commit_message }}"
+          gh release create "$TAG" build.zip --title "$TITLE" --notes "Pre-production release for QA validation"
 
   deploy-production:
-    needs: [build, deploy-staging]   # ✅ 同時依賴 build 與 staging
+    needs: [build, deploy-staging]
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -102,7 +102,7 @@ jobs:
       - name: Release Production Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: prod-${{ needs.build.outputs.version }}-${{ github.run_number }}
-          TITLE: ${{ env.TAG }}: ${{ needs.build.outputs.commit_message }}
-          NOTE: Production release - stable version
-        run: gh release create "$TAG" build.zip --title "$TITLE" --notes "$NOTE"
+        run: |
+          TAG="prod-${{ needs.build.outputs.version }}-${{ github.run_number }}"
+          TITLE="${TAG}: ${{ needs.build.outputs.commit_message }}"
+          gh release create "$TAG" build.zip --title "$TITLE" --notes "Production release - stable version"
