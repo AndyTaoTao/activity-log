@@ -106,3 +106,4 @@ jobs:
           TITLE: ${{ needs.build.outputs.commit_message }}
           NOTE: Production release - stable version
         run: gh release create "$TAG" build.zip --title "$TITLE" --notes "$NOTE"
+
