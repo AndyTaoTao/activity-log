@@ -50,8 +50,8 @@ jobs:
       - name: Release Dev Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ vars.BUILD_TAG }}
-          NOTE: ${{ vars.RELEASE_NOTE }}
+          TAG: dev-${{ github.run_number }}
+          NOTE: Development build for internal testing
         run: gh release create "$TAG" build.zip --notes "$NOTE"
 
   deploy-staging:
@@ -70,8 +70,8 @@ jobs:
       - name: Release Staging Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ vars.BUILD_TAG }}
-          NOTE: ${{ vars.RELEASE_NOTE }}
+          TAG: staging-${{ github.run_number }}
+          NOTE: Pre-production release for QA validation
         run: gh release create "$TAG" build.zip --notes "$NOTE"
 
   deploy-production:
@@ -90,6 +90,6 @@ jobs:
       - name: Release Production Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ vars.BUILD_TAG }}
-          NOTE: ${{ vars.RELEASE_NOTE }}
+          TAG: prod-${{ github.run_number }}
+          NOTE: Production release - stable version
         run: gh release create "$TAG" build.zip --notes "$NOTE"
