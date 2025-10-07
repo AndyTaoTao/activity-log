@@ -1,11 +1,11 @@
 name: CI Dev Deployment
 
-permissions:
-  contents: write
-  
 on:
   push:
-    branches: [ master ]
+    branches: [ master ]   
+
+permissions:
+  contents: write   
 
 jobs:
   build:
@@ -37,7 +37,7 @@ jobs:
     environment: dev
     steps:
       - name: Checkout
-        uses: actions/checkout@v4 
+        uses: actions/checkout@v4  
 
       - name: Download Artifact
         uses: actions/download-artifact@v4
@@ -47,7 +47,8 @@ jobs:
       - name: Release Dev Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ vars.BUILD_TAG }}
           NOTE: ${{ vars.RELEASE_NOTE }}
         run: |
+          TAG="dev-$(date +'%Y%m%d-%H%M%S')"
+          echo "Using tag: $TAG"
           gh release create "$TAG" build.zip --notes "$NOTE"
