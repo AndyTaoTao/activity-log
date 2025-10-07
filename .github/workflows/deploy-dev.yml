@@ -2,7 +2,7 @@ name: CI Dev Deployment
 
 on:
   push:
-    branches: [ master ]   # 你的 repo 預設分支是 master
+    branches: [ master ]
 
 jobs:
   build:
@@ -34,7 +34,7 @@ jobs:
     environment: dev
     steps:
       - name: Checkout
-        uses: actions/checkout@v4   # 🔑 修正點：確保 gh CLI 找得到 .git
+        uses: actions/checkout@v4 
 
       - name: Download Artifact
         uses: actions/download-artifact@v4
