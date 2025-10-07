@@ -1,5 +1,8 @@
 name: CI Dev Deployment
 
+permissions:
+  contents: write
+  
 on:
   push:
     branches: [ master ]
