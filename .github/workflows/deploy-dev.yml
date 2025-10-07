@@ -61,13 +61,24 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifact
-      - name: Release Dev Build
+      - name: Release Dev Build (with rollback + notification)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -e
           TAG="dev-${{ needs.build.outputs.version }}-${{ github.run_number }}"
           TITLE="${TAG}: ${{ needs.build.outputs.commit_message }}"
-          gh release create "$TAG" build.zip --title "$TITLE" --notes "Development build for internal testing"
+          NOTES="Development build for internal testing"
+
+          if ! gh release create "$TAG" build.zip --title "$TITLE" --notes "$NOTES"; then
+            echo "❌ Release 失敗，開始回滾..."
+            gh release delete "$TAG" -y || true
+            exit 1
+          fi
+
+          gh api repos/${{ github.repository }}/commits/${{ github.sha }}/comments \
+            -f body="✅ Dev Release 完成: $TAG  
+          🔗 https://github.com/${{ github.repository }}/releases/tag/$TAG"
 
   deploy-staging:
     needs: build
@@ -80,13 +91,24 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifact
-      - name: Release Staging Build
+      - name: Release Staging Build (with rollback + notification)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -e
           TAG="staging-${{ needs.build.outputs.version }}-${{ github.run_number }}"
           TITLE="${TAG}: ${{ needs.build.outputs.commit_message }}"
-          gh release create "$TAG" build.zip --title "$TITLE" --notes "Pre-production release for QA validation"
+          NOTES="Pre-production release for QA validation"
+
+          if ! gh release create "$TAG" build.zip --title "$TITLE" --notes "$NOTES"; then
+            echo "❌ Release 失敗，開始回滾..."
+            gh release delete "$TAG" -y || true
+            exit 1
+          fi
+
+          gh api repos/${{ github.repository }}/commits/${{ github.sha }}/comments \
+            -f body="✅ Staging Release 完成: $TAG  
+          🔗 https://github.com/${{ github.repository }}/releases/tag/$TAG"
 
   deploy-production:
     needs: [build, deploy-staging]
@@ -99,10 +121,21 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifact
-      - name: Release Production Build
+      - name: Release Production Build (with rollback + notification)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -e
           TAG="prod-${{ needs.build.outputs.version }}-${{ github.run_number }}"
           TITLE="${TAG}: ${{ needs.build.outputs.commit_message }}"
-          gh release create "$TAG" build.zip --title "$TITLE" --notes "Production release - stable version"
+          NOTES="Production release - stable version"
+
+          if ! gh release create "$TAG" build.zip --title "$TITLE" --notes "$NOTES"; then
+            echo "❌ Release 失敗，開始回滾..."
+            gh release delete "$TAG" -y || true
+            exit 1
+          fi
+
+          gh api repos/${{ github.repository }}/commits/${{ github.sha }}/comments \
+            -f body="✅ Production Release 完成: $TAG  
+          🔗 https://github.com/${{ github.repository }}/releases/tag/$TAG"
