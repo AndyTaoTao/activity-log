@@ -2,7 +2,7 @@ name: CI Dev Deployment
 
 on:
   push:
-    branches: [ main ]   # 當 main branch 有 push 時觸發
+    branches: [ master ]   
 
 jobs:
   build:
