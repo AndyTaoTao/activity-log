@@ -10,6 +10,7 @@
   "scripts": {
     "watch": "ncc build src/index.js --watch --license licenses.txt",
     "build": "bun i && ncc build src/index.js --license licenses.txt"
+    "test": "jest --coverage"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.3"
