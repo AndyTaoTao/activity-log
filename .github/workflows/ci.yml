@@ -15,13 +15,12 @@ jobs:
       - name: Run tests
         run: npm test -- --coverage 
       - name: Publish Release
-        if: ${{ success() }}    
-        uses: comnoco/create-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ success() }}
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.run_number }}
-          release_name: "Release ${{ github.run_number }}"
-          body: "自動產生的發行版本"
-          draft: false
-          prerelease: false
+            tag_name: ${{ github.run_number }}
+            name: "Release ${{ github.run_number }}"
+            body: "自動產生的發行版本"
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
