@@ -13,9 +13,9 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run tests
-        run: npm test -- --coverage   # 執行測試（產生覆蓋率報告）
+        run: npm test -- --coverage 
       - name: Publish Release
-        if: ${{ success() }}         # 僅當上述步驟成功時才執行
+        if: ${{ success() }}    
         uses: comnoco/create-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
