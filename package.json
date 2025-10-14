@@ -8,14 +8,14 @@
     "yaml": "^2.8.1"
   },
   "scripts": {
-  "watch": "ncc build src/index.js --watch --license licenses.txt",
-  "build": "npm install && ncc build src/index.js --license licenses.txt",
-  "test": "jest --coverage",
-  "test:unit": "jest __tests__/unit --coverage",
-  "test:integration": "jest __tests__/integration --coverage"
+    "watch": "ncc build src/index.js --watch --license licenses.txt",
+    "build": "npm install && ncc build src/index.js --license licenses.txt",
+    "test": "jest --coverage",
+    "test:unit": "jest __tests__/unit --coverage",
+    "test:integration": "jest __tests__/integration --coverage"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.3",
-    "jest": "^29.0.0"
+    "jest": "^29.7.0"
   }
 }
