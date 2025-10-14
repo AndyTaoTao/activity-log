@@ -37,10 +37,22 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install all dependencies (including dev)
+        run: npm install --include=dev
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
         with:
           name: build-artifact
+
       - name: Run unit tests
         run: |
           echo "Running unit tests..."
@@ -52,10 +64,22 @@ jobs:
     runs-on: ubuntu-latest
     needs: test-unit
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install all dependencies (including dev)
+        run: npm install --include=dev
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
         with:
           name: build-artifact
+
       - name: Run integration tests
         run: |
           echo "Running integration tests..."
@@ -69,9 +93,11 @@ jobs:
     environment:
       name: staging
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
         with:
           name: build-artifact
+
       - name: Create Staging Release
         uses: softprops/action-gh-release@v1
         with:
@@ -91,9 +117,11 @@ jobs:
       name: production
       url: https://github.com/AndyTaoTao/activity-log
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
         with:
           name: build-artifact
+
       - name: Create Production Release
         uses: softprops/action-gh-release@v1
         with:
