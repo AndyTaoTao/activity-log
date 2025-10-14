@@ -11,3 +11,8 @@ test('fetchData returns success response', async () => {
   expect(response.status).toBe(200);
   expect(response.data.message).toBe('Success');
 });
+
+
+test('force fail to trigger issue creation', () => {
+  expect(false).toBe(true);
+});
